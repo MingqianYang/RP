@@ -4,13 +4,11 @@ import json
 
 # Creating a graph
 G = nx.Graph()
-#G = nx.complete_graph()
+G = nx.complete_graph(100)
 
 
-with open('Dataset/CollegeMsg.txt') as f:
-    for line in f:
-        inner_list = [int(elt.strip()) for elt in line.split(' ')]
-        G.add_edge(inner_list[0], inner_list[1])
+
+        
 
 
 
@@ -18,10 +16,19 @@ with open('Dataset/CollegeMsg.txt') as f:
 #print(G.number_of_nodes())
 #print(G.number_of_edges())
 
-
-preds = nx.jaccard_coefficient(G, [(0, 1), (2, 3)])
+H=G.to_undirected()
+preds = nx.jaccard_coefficient(G.to_undirected(), [(0, 1), (3, 4)])
 for u, v, p in preds:
     print('(%d, %d) -> %.8f' % (u, v, p))
+
+
+
+with open('Dataset/CollegeMsg.txt') as f:
+    for line in f:
+        inner_list = [int(elt.strip()) for elt in line.split(' ')]
+        #G.add_edge(inner_list[0], inner_list[1])
+        G.add_node(inner_list[0])
+        G.add_node(inner_list[1])
 
 
     

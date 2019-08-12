@@ -1,9 +1,16 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import json
+import xlsxwriter
+
+
+
+
 
 # Creating a graph
 G = nx.Graph()
+
+
 
 # Populate the graph with data extracted from database
 with open('Dataset/CollegeMsg.txt') as f:
@@ -14,12 +21,23 @@ with open('Dataset/CollegeMsg.txt') as f:
 
 # exmaples https://www.programcreek.com/python/example/89543/networkx.degree_centrality
 def CentralityMeasures(G):
+    row = 0
+    col = 0
 
     # Degree centrality
     deg_cen = nx.degree_centrality(G)
     with open('Results/deg_cen_CollegeMsg.json', 'w') as f:
         json.dump(deg_cen, f)
     print("deg_cen_CollegeMsg.json finished ")
+
+    # Write to excelfile
+    workbook = xlsxwriter.Workbook('Results/deg_cen_CollegeMsg.xlsx')
+    worksheet = workbook.add_worksheet()
+    for key, value in deg_cen.items():
+        row += 1
+        worksheet.write(row, col, key)
+        worksheet.write(row, col + 1, value)
+    workbook.close()
 
     # Closeness centrality
     clo_cen = nx.closeness_centrality(G)

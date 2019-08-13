@@ -4,12 +4,8 @@ import json
 import xlsxwriter
 
 
-
-
-
 # Creating a graph
 G = nx.Graph()
-
 
 
 # Populate the graph with data extracted from database

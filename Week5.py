@@ -4,23 +4,31 @@ import json
 import xlsxwriter
 import operator
 
-datasetpath = 'Dataset/CollegeMsg.txt'
+# facebook-wosn-links
+datasetpath = 'Dataset/facebook_combined.txt'
+percentage = 4
 
-def test(datasetPath):
+threshold_lines = 10000
+
+def test(datasetPath, percentage):
     # Creating a graph
     Ga = nx.Graph()
     Gb = nx.Graph()
 
-    index = 0
+    total_lines = 0
     currentIndex = 0
     bList = []
-
 
     # Loop the Dataset to calculate the total lines
     with open(datasetPath) as f:
         for line in f:
-            index = index + 1
-    print("total lines is :" + str(index))
+            total_lines = total_lines + 1
+    print("total lines is :" + str(total_lines))
+
+
+    if total_lines >= threshold_lines:
+        total_lines = threshold_lines
+
 
     # Populate the graph with half data
     with open(datasetPath) as f:
@@ -29,24 +37,26 @@ def test(datasetPath):
             currentIndex += 1
             inner_list = [int(elt.strip()) for elt in line.split(' ')]
 
-            if currentIndex <= index/2:
+            if currentIndex <= total_lines/2:
                 Ga.add_edge(inner_list[0], inner_list[1])
             else:
+                if currentIndex >= total_lines:
+                    break
                 Gb.add_edge(inner_list[0], inner_list[1])
                 bList.append((inner_list[0], inner_list[1]))
 
     no_edge_pairs = nx.non_edges(Ga)
 
     # resource_allocation_index jaccard_coefficient  adamic_adar_index
-    preds = nx.adamic_adar_index(Ga, list(no_edge_pairs))
+    preds = nx.resource_allocation_index(Ga, list(no_edge_pairs))
     mylist = (list(preds))
     mylist.sort(key = operator.itemgetter(2), reverse = True)
 
-    number_0f_top_percent = int(len(mylist) / 25)
-    print("选取前： " + str(number_0f_top_percent) + "个数据")
+    number_of_top_percent = int(percentage * (len(mylist) / 100))
+    print("选取前： " + str(number_of_top_percent) + "个数据")
 
     cList = []
-    topPercentList = mylist[0:number_0f_top_percent]
+    topPercentList = mylist[0:number_of_top_percent]
     for item in topPercentList:
         cList.append((item[0], item[1]))
 
@@ -60,7 +70,7 @@ def test(datasetPath):
 
 
 
-test(datasetpath)
+test(datasetpath, percentage)
 
 ''' 
 18865

@@ -19,4 +19,5 @@
 # Dataset website  
 
 1. [CollegeMsg](https://snap.stanford.edu/data/CollegeMsg.html)
+2. [Facebook friendships](http://konect.uni-koblenz.de/networks/facebook-wosn-links)
 

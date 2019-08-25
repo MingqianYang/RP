@@ -3,17 +3,24 @@ import matplotlib.pyplot as plt
 import json
 import xlsxwriter
 import operator
+import os
 
 # facebook-wosn-links
-datasetpath = 'Dataset/facebook_combined.txt'
-percentage = 4
+datasetpath = 'Dataset/CollegeMsg.txt'
+result_output_path = 'Results/results.txt'
 
+percentage = 4
 threshold_lines = 10000
 
-def test(datasetPath, percentage):
+# Candidate tested functions
+function_lists = [nx.resource_allocation_index,
+                  nx.jaccard_coefficient,
+                  nx.adamic_adar_index,
+                  nx.preferential_attachment]
+
+def test_predictions(datasetPath, percentage, prediction_function):
     # Creating a graph
     Ga = nx.Graph()
-    Gb = nx.Graph()
 
     total_lines = 0
     currentIndex = 0
@@ -25,10 +32,8 @@ def test(datasetPath, percentage):
             total_lines = total_lines + 1
     print("total lines is :" + str(total_lines))
 
-
     if total_lines >= threshold_lines:
         total_lines = threshold_lines
-
 
     # Populate the graph with half data
     with open(datasetPath) as f:
@@ -42,13 +47,11 @@ def test(datasetPath, percentage):
             else:
                 if currentIndex >= total_lines:
                     break
-                Gb.add_edge(inner_list[0], inner_list[1])
                 bList.append((inner_list[0], inner_list[1]))
 
     no_edge_pairs = nx.non_edges(Ga)
 
-    # resource_allocation_index jaccard_coefficient  adamic_adar_index
-    preds = nx.resource_allocation_index(Ga, list(no_edge_pairs))
+    preds = prediction_function(Ga, list(no_edge_pairs))
     mylist = (list(preds))
     mylist.sort(key = operator.itemgetter(2), reverse = True)
 
@@ -63,14 +66,38 @@ def test(datasetPath, percentage):
     dList = list(set(bList + cList))
     repeatedNumber = len(bList) + len(cList) - len(dList)
 
-
+    print("********************************")
+    print(prediction_function.__name__ + ": ")
     print("重复个数：" + str(repeatedNumber))
     print(str(repeatedNumber / len(bList)))
     print(str(repeatedNumber / len(topPercentList)))
 
+    # Write results to file
+    with open(result_output_path, 'a+') as f:
+        f.write("********************************\r\n" )
+        f.write(prediction_function.__name__ + ": \r\n")
+        f.write("重复个数：" + str(repeatedNumber) +"\r\n")
+        f.write(str(repeatedNumber / len(bList)) +"\r\n")
+        f.write(str(repeatedNumber / len(topPercentList)) +"\r\n")
 
 
-test(datasetpath, percentage)
+def start_test ():
+    # Remove the file first
+    os.remove(result_output_path)
+
+    for item in function_lists:
+        test_predictions(datasetpath, percentage, item)
+
+
+
+
+
+def main():
+    start_test()
+
+
+if __name__ == "__main__":
+    main()
 
 ''' 
 18865

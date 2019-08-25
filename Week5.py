@@ -4,66 +4,63 @@ import json
 import xlsxwriter
 import operator
 
-# Creating a graph
-Ga = nx.Graph()
-Gb = nx.Graph()
+datasetpath = 'Dataset/CollegeMsg.txt'
 
-index = 0
-currentIndex = 0
-bList = []
+def test(datasetPath):
+    # Creating a graph
+    Ga = nx.Graph()
+    Gb = nx.Graph()
 
-
-# Loop the Dataset to calculate the total lines
-with open('Dataset/CollegeMsg.txt') as f:
-    for line in f:
-        index = index + 1
-print("total lines is :" + str(index))
+    index = 0
+    currentIndex = 0
+    bList = []
 
 
-# Populate the graph with half data
-with open('Dataset/CollegeMsg.txt') as f:
+    # Loop the Dataset to calculate the total lines
+    with open(datasetPath) as f:
+        for line in f:
+            index = index + 1
+    print("total lines is :" + str(index))
 
-    for line in f:
-        currentIndex = currentIndex + 1
-        inner_list = [int(elt.strip()) for elt in line.split(' ')]
+    # Populate the graph with half data
+    with open(datasetPath) as f:
 
-        if currentIndex <= index/2:
-            Ga.add_edge(inner_list[0], inner_list[1])
-        else:
-            Gb.add_edge(inner_list[0], inner_list[1])
-            bList.append((inner_list[0], inner_list[1]))
+        for line in f:
+            currentIndex += 1
+            inner_list = [int(elt.strip()) for elt in line.split(' ')]
+
+            if currentIndex <= index/2:
+                Ga.add_edge(inner_list[0], inner_list[1])
+            else:
+                Gb.add_edge(inner_list[0], inner_list[1])
+                bList.append((inner_list[0], inner_list[1]))
+
+    no_edge_pairs = nx.non_edges(Ga)
+
+    # resource_allocation_index jaccard_coefficient  adamic_adar_index
+    preds = nx.adamic_adar_index(Ga, list(no_edge_pairs))
+    mylist = (list(preds))
+    mylist.sort(key = operator.itemgetter(2), reverse = True)
+
+    number_0f_top_percent = int(len(mylist) / 25)
+    print("选取前： " + str(number_0f_top_percent) + "个数据")
+
+    cList = []
+    topPercentList = mylist[0:number_0f_top_percent]
+    for item in topPercentList:
+        cList.append((item[0], item[1]))
+
+    dList = list(set(bList + cList))
+    repeatedNumber = len(bList) + len(cList) - len(dList)
 
 
-#print(list(nx.connected_components(G)))
-#print(list(nx.non_edges(G)))
-
-noEdgePairs = nx.non_edges(Ga)
-
-# resource_allocation_index jaccard_coefficient  adamic_adar_index
-preds = nx.adamic_adar_index(Ga, list(noEdgePairs))
-#.sort(key = operator.itemgetter(0) , reverse = True)
-mylist = (list(preds))
-mylist.sort(key = operator.itemgetter(2), reverse = True)
-
-numberOftopPercent = int(len(mylist) / 25)
-print("选取前： " + str(numberOftopPercent))
-
-#top20PercentList
-cList = []
-topPercentList = mylist[0:numberOftopPercent]
-for item in topPercentList:
-    cList.append((item[0], item[1]))
+    print("重复个数：" + str(repeatedNumber))
+    print(str(repeatedNumber / len(bList)))
+    print(str(repeatedNumber / len(topPercentList)))
 
 
-dList = list(set(bList + cList))
 
-repeatedNumber = len(bList) + len(cList) - len(dList)
-
-#
-print("重复个数：" + str(repeatedNumber))
-print(str(repeatedNumber / len(bList)))
-print(str(repeatedNumber / len(topPercentList)))
-
+test(datasetpath)
 
 ''' 
 18865
@@ -98,8 +95,6 @@ for s in list(noEdgePairs):
 workbook.close()
 
 '''
-#如果不存在则计算linkprediction的概率分数S（ij）；
-# resource_allocation_index
 
 
 

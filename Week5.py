@@ -5,12 +5,12 @@ import xlsxwriter
 import operator
 import os
 
-# facebook-wosn-links
+# facebook-wosn-links CollegeMsg
 datasetpath = 'Dataset/CollegeMsg.txt'
 result_output_path = 'Results/results.txt'
 
-percentage = 4
-threshold_lines = 10000
+percentage = 20
+
 
 # Candidate tested functions
 function_lists = [nx.resource_allocation_index,
@@ -32,15 +32,12 @@ def test_predictions(datasetPath, percentage, prediction_function):
             total_lines = total_lines + 1
     print("total lines is :" + str(total_lines))
 
-    if total_lines >= threshold_lines:
-        total_lines = threshold_lines
-
     # Populate the graph with half data
     with open(datasetPath) as f:
 
         for line in f:
             currentIndex += 1
-            inner_list = [int(elt.strip()) for elt in line.split(' ')]
+            inner_list = [int(elt.strip()) for elt in line.split()]
 
             if currentIndex <= total_lines/2:
                 Ga.add_edge(inner_list[0], inner_list[1])

@@ -20,4 +20,7 @@
 
 1. [CollegeMsg](https://snap.stanford.edu/data/CollegeMsg.html)
 2. [Facebook friendships](http://konect.uni-koblenz.de/networks/facebook-wosn-links)
+3. [Haggle](http://konect.uni-koblenz.de/networks/contact)
+4. [Hypertext 2009](http://konect.uni-koblenz.de/networks/sociopatterns-hypertext)
+5. [Infectious](http://konect.uni-koblenz.de/networks/sociopatterns-infectious)
 

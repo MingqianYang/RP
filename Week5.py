@@ -83,7 +83,8 @@ def test_predictions(datasetPath, percentage, prediction_function):
 
 def start_test ():
     # Remove the file first
-    os.remove(result_output_path)
+    if  os._exists(result_output_path):
+        os.remove(result_output_path)
 
     for item in function_lists:
         test_predictions(datasetpath, percentage, item)

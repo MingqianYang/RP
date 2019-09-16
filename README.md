@@ -19,8 +19,9 @@
 # Dataset website  
 
 1. [CollegeMsg](https://snap.stanford.edu/data/CollegeMsg.html)
-2. [Facebook friendships](http://konect.uni-koblenz.de/networks/facebook-wosn-links)
-3. [Haggle](http://konect.uni-koblenz.de/networks/contact)
-4. [Hypertext 2009](http://konect.uni-koblenz.de/networks/sociopatterns-hypertext)
-5. [Infectious](http://konect.uni-koblenz.de/networks/sociopatterns-infectious)
-
+2. [Haggle](http://konect.uni-koblenz.de/networks/contact)
+3. [Hypertext 2009](http://konect.uni-koblenz.de/networks/sociopatterns-hypertext)
+4. [Infectious](http://konect.uni-koblenz.de/networks/sociopatterns-infectious)
+5. [arXiv hep-th](http://konect.uni-koblenz.de/networks/ca-cit-HepTh)
+6. [arXiv hep-ph](http://konect.uni-koblenz.de/networks/ca-cit-HepPh)
+7. [Reality Mining](http://konect.uni-koblenz.de/networks/mit)

@@ -5,11 +5,14 @@ import xlsxwriter
 import operator
 import os
 
+
+#print(__file__)
+
 # facebook-wosn-links out.contact CollegeMsg.txt
 # out.sociopatterns-hypertext.txt
 # out.sociopatterns-infectious.txt
 datasetpath = 'Dataset/CollegeMsg.txt'
-result_output_path = 'Results/week6_results.txt'
+result_output_path = 'Results/week8_results.txt'
 generated_dataset = 'Dataset/generateddataset.txt'
 percentage = 20
 
@@ -147,8 +150,13 @@ def start_test ():
             f.write("\r\n")
             f.flush()
 
-        for item in function_lists:
-            test_predictions(current_dataset_name, percentage, item)
+        for current_function in function_lists:
+            for current_percentage in range(10, 100, 10):
+                with open(result_output_path, 'a+') as f:
+                    f.write("%%%%%%%%%%%% %d %%%%%%%%%%%%%%%%%%%%%%\r\n" %current_percentage)
+                    f.write("\r\n")
+                    f.flush()
+                test_predictions(current_dataset_name, current_percentage, current_function)
 
 
 def main():
@@ -156,6 +164,10 @@ def main():
     start_test()
 
 
+    with open(result_output_path, 'a+') as f:
+        f.write("end")
+        f.write("\r\n")
+        f.flush()
 if __name__ == "__main__":
     main()
 

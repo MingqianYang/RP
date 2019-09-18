@@ -13,7 +13,7 @@ import os
 #datasetpath = 'Dataset/CollegeMsg.txt'
 result_output_path = 'Results/myresults.xlsx'
 generated_dataset = 'Dataset/generateddataset.txt'
-new_database_info = 'Results/mydatabase.txt'
+
 
 time_index = 0
 
@@ -21,8 +21,6 @@ time_index = 0
 if os._exists(result_output_path):
     os.remove(result_output_path)
 
-if os._exists(new_database_info):
-    os.remove(new_database_info)
 
 # Start from the first cell below the headers.
 manifest = 15
@@ -34,34 +32,10 @@ function_lists = [nx.resource_allocation_index,
                   nx.preferential_attachment]
 
 
-def print_filtered_dataset(datasetPath):
-    # Creating a graph
-    Gr = nx.Graph()  # Remove redundant
-    filtered_list = []  # To store the new removed list
-    # Remove redundant data
-    with open(datasetPath) as f:
-        for line in f:
-            inner_list = [int(elt.strip()) for elt in line.split()]
-            Gr.add_edge(inner_list[0], inner_list[1], weight=inner_list[time_index])
-
-    total_lines = len(Gr.edges())
-    tempstring_list = list(nx.generate_edgelist(Gr, data=['weight']))
-
-    for item in tempstring_list:
-        inner_list = [int(elt.strip()) for elt in item.split()]
-        filtered_list.append((inner_list[0], inner_list[1], inner_list[2]))
-
-    # Order filtered_list with weight vlue
-    filtered_list.sort(key=lambda elem: elem[2])
-    with open(generated_dataset, 'w') as f:
-        for item in filtered_list:
-            f.write(str(item[0]) + " " + str(item[1]) + " " + str(item[2]) + "\n")
 
 
 def test_predictions(datasetPath, percentage, prediction_function, worksheet, row, col):
-    print("********************************")
     # Creating a graph
-    Gr = nx.Graph()  # Remove redundant
     Ga = nx.Graph()
 
     total_lines = 0
@@ -69,37 +43,26 @@ def test_predictions(datasetPath, percentage, prediction_function, worksheet, ro
     bList = []
     filtered_list = []  # To store the new removed list
 
-    # Remove redundant data
+    # Loop the Dataset to calculate the total lines
     with open(datasetPath) as f:
         for line in f:
+            total_lines = total_lines + 1
+
+
+    # Populate the graph with half data
+    with open(datasetPath) as f:
+
+        for line in f:
+            currentIndex += 1
             inner_list = [int(elt.strip()) for elt in line.split()]
-            Gr.add_edge(inner_list[0], inner_list[1], weight=inner_list[time_index])
 
-    with open(generated_dataset, 'a+', encoding="utf-8") as f:
-        f.write("新生成的dataset，总边长为：{} \r\n".format(len(Gr.edges())))
-        f.write("新生成的dataset，点数为： {} \r\n".format(len(Gr.nodes())))
-        f.flush()
+            if currentIndex <= total_lines/2:
+                Ga.add_edge(inner_list[0], inner_list[1])
+            else:
+                if currentIndex >= total_lines:
+                    break
+                bList.append((inner_list[0], inner_list[1]))
 
-    total_lines = len(Gr.edges())
-    tempstring_list = list(nx.generate_edgelist(Gr, data=['weight']))
-
-    for item in tempstring_list:
-        inner_list = [int(elt.strip()) for elt in item.split()]
-        filtered_list.append((inner_list[0], inner_list[1], inner_list[2]))
-
-    # Order filtered_list with weight vlue
-    filtered_list.sort(key=lambda elem: elem[2])
-
-    for item in filtered_list:
-        currentIndex += 1
-
-        # put half of data into graph a
-        if currentIndex <= total_lines / 2:
-            Ga.add_edge(item[0], item[1])
-        else:  # put half of data into list  b
-            if currentIndex >= total_lines:
-                break
-            bList.append((item[0], item[1]))
 
     no_edge_pairs = nx.non_edges(Ga)
 
@@ -130,12 +93,13 @@ def start_test():
     bold = workbook.add_format({'bold': True})
 
     for current_function in function_lists:
-
+        print(current_function.__name__)
         worksheet = workbook.add_worksheet(current_function.__name__)
         row = 1
         col = 1
 
         for current_percentage in range(10, 100, 10):
+            print('   %d '  %(current_percentage))
             # AUC y-axis
             worksheet.write(row, 0, current_percentage, bold)
 
@@ -145,6 +109,7 @@ def start_test():
             col = 1
             datasetfiles = os.listdir("Dataset/")
             for current_dataset in datasetfiles:
+                print("          {}" + (current_dataset))
                 # AUC x-axis
                 worksheet.write(0, col, current_dataset, bold)
                 # precision x-axis
@@ -162,12 +127,13 @@ def start_test():
 
             row += 1
 
+        #break
+
 
     workbook.close()
-
-
 def main():
     start_test()
+
 
     print("end")
 

@@ -9,9 +9,9 @@ G = nx.Graph()
 
 
 # Populate the graph with data extracted from database
-with open('Dataset/CollegeMsg.txt') as f:
+with open('Dataset/CollegeMsg') as f:
     for line in f:
-        inner_list = [int(elt.strip()) for elt in line.split(' ')]
+        inner_list = [int(elt.strip()) for elt in line.split()]
         G.add_edge(inner_list[0], inner_list[1])
 
 

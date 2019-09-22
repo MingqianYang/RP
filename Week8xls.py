@@ -1,19 +1,10 @@
 import networkx as nx
-import matplotlib.pyplot as plt
-import json
 import xlsxwriter
 import operator
 import os
 
-# print(__file__)
 
-# facebook-wosn-links out.contact CollegeMsg.txt
-# out.sociopatterns-hypertext.txt
-# out.sociopatterns-infectious.txt
-#datasetpath = 'Dataset/CollegeMsg.txt'
-result_output_path = 'Results/myresults.xlsx'
-generated_dataset = 'Dataset/generateddataset.txt'
-
+result_output_path = 'Results/week9myresults.xlsx'
 
 time_index = 0
 
@@ -30,8 +21,6 @@ function_lists = [nx.resource_allocation_index,
                   nx.jaccard_coefficient,
                   nx.adamic_adar_index,
                   nx.preferential_attachment]
-
-
 
 
 def test_predictions(datasetPath, percentage, prediction_function, worksheet, row, col):
@@ -107,7 +96,7 @@ def start_test():
             worksheet.write(row, manifest, current_percentage, bold)
 
             col = 1
-            datasetfiles = os.listdir("Dataset/")
+            datasetfiles = os.listdir("NewDatasets/")
             for current_dataset in datasetfiles:
                 print("          {}" + (current_dataset))
                 # AUC x-axis
@@ -115,10 +104,6 @@ def start_test():
                 # precision x-axis
                 worksheet.write(0, col + manifest, current_dataset, bold)
 
-                if current_dataset == 'CollegeMsg':
-                    time_index = 2
-                else:
-                    time_index = 3
 
                 current_dataset_name = "Dataset/" + current_dataset
                 test_predictions(current_dataset_name, current_percentage, current_function, worksheet, row, col)

@@ -105,20 +105,17 @@ def start_test():
                 worksheet.write(0, col + manifest, current_dataset, bold)
 
 
-                current_dataset_name = "Dataset/" + current_dataset
+                current_dataset_name = "NewDatasets/" + current_dataset
                 test_predictions(current_dataset_name, current_percentage, current_function, worksheet, row, col)
 
                 col += 1
 
             row += 1
 
-        #break
-
 
     workbook.close()
 def main():
     start_test()
-
 
     print("end")
 

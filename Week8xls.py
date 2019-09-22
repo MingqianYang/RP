@@ -4,13 +4,11 @@ import operator
 import os
 
 
-result_output_path = 'Results/week9myresults.xlsx'
+
 
 time_index = 0
+dataset_percentage = 0
 
-# Remove the file first
-if os._exists(result_output_path):
-    os.remove(result_output_path)
 
 
 # Start from the first cell below the headers.
@@ -22,15 +20,15 @@ function_lists = [nx.resource_allocation_index,
                   nx.adamic_adar_index,
                   nx.preferential_attachment]
 
+precentage_conatainer = [0.1, 0.3, 0.5, 0.7, 0.9]
 
-def test_predictions(datasetPath, percentage, prediction_function, worksheet, row, col):
+def test_predictions(datasetPath, threshold, percentage, prediction_function, worksheet, row, col):
     # Creating a graph
     Ga = nx.Graph()
 
     total_lines = 0
     currentIndex = 0
     bList = []
-    filtered_list = []  # To store the new removed list
 
     # Loop the Dataset to calculate the total lines
     with open(datasetPath) as f:
@@ -45,7 +43,7 @@ def test_predictions(datasetPath, percentage, prediction_function, worksheet, ro
             currentIndex += 1
             inner_list = [int(elt.strip()) for elt in line.split()]
 
-            if currentIndex <= total_lines/2:
+            if currentIndex <= total_lines * percentage:
                 Ga.add_edge(inner_list[0], inner_list[1])
             else:
                 if currentIndex >= total_lines:
@@ -59,7 +57,7 @@ def test_predictions(datasetPath, percentage, prediction_function, worksheet, ro
     mylist = (list(preds))
     mylist.sort(key=operator.itemgetter(2), reverse=True)
 
-    number_of_top_percent = int(percentage * (len(mylist) / 100))
+    number_of_top_percent = int(threshold * (len(mylist) / 100))
 
     cList = []
     topPercentList = mylist[0:number_of_top_percent]
@@ -75,45 +73,52 @@ def test_predictions(datasetPath, percentage, prediction_function, worksheet, ro
 
 
 def start_test():
-    # Create a workbook and add a worksheet.
-    workbook = xlsxwriter.Workbook(result_output_path)
 
-    # Add a bold format to use to highlight cells.
-    bold = workbook.add_format({'bold': True})
+    for current_dataset_percentage in precentage_conatainer:
+        print('%d ' % (current_dataset_percentage))
 
-    for current_function in function_lists:
-        print(current_function.__name__)
-        worksheet = workbook.add_worksheet(current_function.__name__)
-        row = 1
-        col = 1
+        result_output_path = "Results/results" + str(current_dataset_percentage*10) + ".xlsx"
+        # Create a workbook and add a worksheet.
+        workbook = xlsxwriter.Workbook(result_output_path)
 
-        for current_percentage in range(10, 100, 10):
-            print('   %d '  %(current_percentage))
-            # AUC y-axis
-            worksheet.write(row, 0, current_percentage, bold)
+        # Add a bold format to use to highlight cells.
+        bold = workbook.add_format({'bold': True})
 
-            # precision y-axis
-            worksheet.write(row, manifest, current_percentage, bold)
-
+        for current_function in function_lists:
+            print(current_function.__name__)
+            worksheet = workbook.add_worksheet(current_function.__name__)
+            row = 1
             col = 1
-            datasetfiles = os.listdir("NewDatasets/")
-            for current_dataset in datasetfiles:
-                print("          {}" + (current_dataset))
-                # AUC x-axis
-                worksheet.write(0, col, current_dataset, bold)
-                # precision x-axis
-                worksheet.write(0, col + manifest, current_dataset, bold)
+
+            for current_threshold in range(5, 50, 5):
+                print('   %d '  %(current_threshold))
+                # AUC y-axis
+                worksheet.write(row, 0, current_threshold, bold)
+
+                # precision y-axis
+                worksheet.write(row, manifest, current_threshold, bold)
+
+                col = 1
+                datasetfiles = os.listdir("NewDatasets/")
+                for current_dataset in datasetfiles:
+                    print("          {}" + (current_dataset))
+                    # AUC x-axis
+                    worksheet.write(0, col, current_dataset, bold)
+                    # precision x-axis
+                    worksheet.write(0, col + manifest, current_dataset, bold)
+
+                    current_dataset_name = "NewDatasets/" + current_dataset
 
 
-                current_dataset_name = "NewDatasets/" + current_dataset
-                test_predictions(current_dataset_name, current_percentage, current_function, worksheet, row, col)
+                    test_predictions(current_dataset_name, current_threshold, current_dataset_percentage, current_function, worksheet, row, col)
 
-                col += 1
+                    col += 1
 
-            row += 1
+                row += 1
 
 
-    workbook.close()
+        workbook.close()
+
 def main():
     start_test()
 

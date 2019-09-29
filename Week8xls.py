@@ -118,7 +118,7 @@ def start_test():
 
                 row += 1
             # average
-            worksheet.write(row, 1, '=AVERAGE(B2:B7)')
+            worksheet.write(row, 1, '=AVERAGE(B2:B6)')
 
 
         workbook.close()

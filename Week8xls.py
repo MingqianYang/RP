@@ -75,7 +75,7 @@ def test_predictions(datasetPath, threshold, percentage, prediction_function, wo
 def start_test():
 
     for current_dataset_percentage in precentage_conatainer:
-        print('%d ' % (current_dataset_percentage))
+        print('%f ' % (current_dataset_percentage))
 
         result_output_path = "Results/results" + str(current_dataset_percentage*10) + ".xlsx"
         # Create a workbook and add a worksheet.
@@ -90,10 +90,11 @@ def start_test():
             row = 1
             col = 1
 
-            for current_threshold in range(5, 50, 5):
+            for current_threshold in range(10, 91, 20):
                 print('   %d '  %(current_threshold))
                 # AUC y-axis
                 worksheet.write(row, 0, current_threshold, bold)
+                worksheet.write(row+1, 0, "Average", bold)
 
                 # precision y-axis
                 worksheet.write(row, manifest, current_threshold, bold)
@@ -104,6 +105,7 @@ def start_test():
                     print("          {}" + (current_dataset))
                     # AUC x-axis
                     worksheet.write(0, col, current_dataset, bold)
+
                     # precision x-axis
                     worksheet.write(0, col + manifest, current_dataset, bold)
 
@@ -115,6 +117,8 @@ def start_test():
                     col += 1
 
                 row += 1
+            # average
+            worksheet.write(row + 1, col, '=AVERAGE(B2:B7)')
 
 
         workbook.close()

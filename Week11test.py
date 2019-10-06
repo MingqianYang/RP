@@ -48,8 +48,8 @@ def test_predictions(datasetPath, threshold, percentage, prediction_function, wo
                     break
                 bList.append((inner_list[0], inner_list[1]))
 
-
-
+    bList = list(set(bList))
+    
     no_edge_pairs = nx.non_edges(Ga)
     no_edge_pairs_list = list(no_edge_pairs)
 
@@ -65,9 +65,6 @@ def test_predictions(datasetPath, threshold, percentage, prediction_function, wo
             value += (A * B) / len(Nu)
 
         preds.append((pair[0], pair[1], value))
-
-
-
 
     #preds = prediction_function(Ga, list(no_edge_pairs))
     mylist = (list(preds))

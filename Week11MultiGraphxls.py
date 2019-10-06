@@ -4,12 +4,8 @@ import operator
 import os
 
 
-
-
 time_index = 0
 dataset_percentage = 0
-
-
 
 # Start from the first cell below the headers.
 manifest = 15
@@ -24,14 +20,11 @@ precentage_conatainer = [0.1, 0.3, 0.5, 0.7, 0.9]
 
 def test_predictions(datasetPath, threshold, percentage, prediction_function, worksheet, row, col):
     # Creating a graph
-    Ga = nx.Graph()
-    Gb = nx.Graph()
-
+    Ga = nx.MultiGraph()
 
     total_lines = 0
     currentIndex = 0
     bList = []
-
 
     # Loop the Dataset to calculate the total lines, and put all the data into graph A
     with open(datasetPath) as f:
@@ -57,6 +50,7 @@ def test_predictions(datasetPath, threshold, percentage, prediction_function, wo
                     break
                 bList.append((inner_list[0], inner_list[1]))
 
+    bList = set(bList)
 
     no_edge_pairs = nx.non_edges(Ga)
 
@@ -107,7 +101,7 @@ def start_test():
                 worksheet.write(row, manifest, current_threshold, bold)
 
                 col = 1
-                datasetfiles = os.listdir("NewDatasets/")
+                datasetfiles = os.listdir("Dataset/")
                 for current_dataset in datasetfiles:
                     print("          {}" + (current_dataset))
                     # AUC x-axis
@@ -116,7 +110,7 @@ def start_test():
                     # precision x-axis
                     worksheet.write(0, col + manifest, current_dataset, bold)
 
-                    current_dataset_name = "NewDatasets/" + current_dataset
+                    current_dataset_name = "Dataset/" + current_dataset
 
 
                     test_predictions(current_dataset_name, current_threshold, current_dataset_percentage, current_function, worksheet, row, col)
